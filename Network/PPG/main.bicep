@@ -4,13 +4,18 @@ param vnetName string = 'vnet-${disambiguationPhrase}${uniqueString(subscription
 param nsgName string = 'nsg-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
 //ppg
 param ppgName string = 'ppg-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
-//pip
-param publicIPAddressName string = 'pip-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
-//nic
-param nicName string = 'nic-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
-//vmname
-param vmName string = 'vm-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
-param diskName string = 'osdisk-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
+
+//vm1
+param publicIPAddressName string = 'ppg1-pip'
+param nicName string = 'ppg1-nic'
+param vmName string = 'ppg1-vmmjl'
+param diskName string = 'ppg1-osdisk'
+
+//vm2
+param publicIPAddressName2 string = 'ppg2-pip'
+param nicName2 string = 'ppg2-nic'
+param vmName2 string = 'ppg2-vmmjl'
+param diskName2 string = 'ppg2-osdisk'
 
 //supply during deployment
 @secure()
@@ -83,6 +88,8 @@ resource ppg 'Microsoft.Compute/proximityPlacementGroups@2020-06-01' = {
   }
 }
 
+//vm1
+
 //public ip
 resource publicIPAddress 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   name: publicIPAddressName
@@ -132,7 +139,7 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       vmSize: 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
     }
     osProfile: {
-      computerName: substring(vmName,3,13) //strips off the 'vm-' so the vm name is short enough
+      computerName: vmName //strips off the 'vm-' so the vm name is short enough
       adminUsername: UN
       adminPassword: Pass
     }
@@ -164,3 +171,89 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
     '1'
   ]
 }
+
+
+//vm2
+
+//public ip
+resource publicIPAddress2 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
+  name: publicIPAddressName2
+  location: location
+    sku: {
+    name: 'Standard'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+    dnsSettings: {
+      domainNameLabel: vmName2
+    }
+  }
+  zones: [
+    '1'
+  ]
+}
+
+//nic
+resource networkInterface2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
+  name: nicName2
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${virtualNetwork.id}/subnets/${'vmSubnet'}'
+          }
+          publicIPAddress: {
+            id: publicIPAddress2.id
+          }
+        }
+      }
+    ]
+  }
+}
+
+//deploy vm
+resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
+  name: vmName2
+  location: location
+  properties: {
+    hardwareProfile: {
+      vmSize: 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
+    }
+    osProfile: {
+      computerName: vmName2 //strips off the 'vm-' so the vm name is short enough
+      adminUsername: UN
+      adminPassword: Pass
+    }
+    proximityPlacementGroup: {
+      id: ppg.id
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'Canonical'
+        offer: '0001-com-ubuntu-server-focal'
+        sku: '20_04-lts-gen2'
+        version: 'latest'
+      }
+      osDisk: {
+        name: diskName2
+        caching: 'ReadWrite'
+        createOption: 'FromImage'
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: networkInterface2.id
+        }
+      ]
+    }
+  }
+  zones: [
+    '1'
+  ]
+}
+
