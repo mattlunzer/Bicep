@@ -1,5 +1,8 @@
 //0.1
 
+//region
+param location string = resourceGroup().location
+
 //network
 param disambiguationPhrase string = 'eus' //region TLA
 param vnetName string = 'vnet-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
@@ -24,9 +27,6 @@ param diskName2 string = 'osdisk2-${disambiguationPhrase}${vmName}'
 param myIp string
 param UN string
 param Pass string
-
-//region
-param location string = resourceGroup().location
 
 //nsg
 resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
@@ -258,4 +258,3 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
     '1'
   ]
 }
-

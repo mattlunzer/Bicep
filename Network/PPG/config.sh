@@ -2,7 +2,7 @@
 
 #Run - updates
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 #Ubuntu - Install Git and other helpful tools
 sudo apt install build-essential -y
