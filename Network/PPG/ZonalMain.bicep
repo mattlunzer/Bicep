@@ -15,12 +15,14 @@ param nsgName string = 'nsg-${disambiguationPhrase}${uniqueString(subscription()
 param vmName string = 'vm1${disambiguationPhrase}'
 param publicIPAddressName string = 'pip-${disambiguationPhrase}${vmName}'
 param nicName string = 'nic-${disambiguationPhrase}${vmName}'
+param eAN bool = false
 param diskName string = 'osdisk-${disambiguationPhrase}${vmName}'
 
 //vm2
 param vmName2 string = 'vm2${disambiguationPhrase}'
 param publicIPAddressName2 string = 'pip2-${disambiguationPhrase}${vmName}'
 param nicName2 string = 'nic2-${disambiguationPhrase}${vmName}'
+param eAN2 bool = false
 param diskName2 string = 'osdisk2-${disambiguationPhrase}${vmName}'
 
 //supply during deployment
@@ -116,6 +118,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: nicName
   location: location
   properties: {
+    enableAcceleratedNetworking: eAN
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -139,7 +142,7 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
+      vmSize: 'Standard_D8s_v4' //for complete list --> az vm list-sizes --location "eastus" -o table
     }
     osProfile: {
       computerName: vmName //strips off the 'vm-' so the vm name is short enough
@@ -201,6 +204,7 @@ resource networkInterface2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   name: nicName2
   location: location
   properties: {
+    enableAcceleratedNetworking: eAN2
     ipConfigurations: [
       {
         name: 'ipconfig1'
@@ -224,7 +228,7 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
+      vmSize: 'Standard_D8s_v4' //for complete list --> az vm list-sizes --location "eastus" -o table
     }
     osProfile: {
       computerName: vmName2 //strips off the 'vm-' so the vm name is short enough
