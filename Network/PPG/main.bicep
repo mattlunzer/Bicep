@@ -1,21 +1,23 @@
+//0.1
+
 //network
-param disambiguationPhrase string = 'ppg'
+param disambiguationPhrase string = 'eus' //region TLA
 param vnetName string = 'vnet-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
 param nsgName string = 'nsg-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
 //ppg
 param ppgName string = 'ppg-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
 
 //vm1
-param publicIPAddressName string = 'ppg1-pip'
-param nicName string = 'ppg1-nic'
-param vmName string = 'ppg1-vmmjl'
-param diskName string = 'ppg1-osdisk'
+param vmName string = 'vm1${disambiguationPhrase}'
+param publicIPAddressName string = 'pip-${disambiguationPhrase}${vmName}'
+param nicName string = 'nic-${disambiguationPhrase}${vmName}'
+param diskName string = 'osdisk-${disambiguationPhrase}${vmName}'
 
 //vm2
-param publicIPAddressName2 string = 'ppg2-pip'
-param nicName2 string = 'ppg2-nic'
-param vmName2 string = 'ppg2-vmmjl'
-param diskName2 string = 'ppg2-osdisk'
+param vmName2 string = 'vm2${disambiguationPhrase}'
+param publicIPAddressName2 string = 'pip2-${disambiguationPhrase}${vmName}'
+param nicName2 string = 'nic2-${disambiguationPhrase}${vmName}'
+param diskName2 string = 'osdisk2-${disambiguationPhrase}${vmName}'
 
 //supply during deployment
 @secure()
