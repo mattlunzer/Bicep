@@ -1,8 +1,11 @@
 #!/bin/bash
 
-#Run - updates
+#Run updates
 sudo apt update
 sudo apt upgrade -y
+
+#install net-tools
+sudo apt install -y net-tools
 
 #Ubuntu - Install Git and other helpful tools
 sudo apt install build-essential -y
