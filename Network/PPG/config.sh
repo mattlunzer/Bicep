@@ -29,5 +29,4 @@ make
 #make install is fast
 sudo make install
 
-cd sockperf
-sudo vi config.sh
+cd sockperf/
