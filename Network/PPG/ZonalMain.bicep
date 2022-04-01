@@ -15,14 +15,14 @@ param nsgName string = 'nsg-${disambiguationPhrase}${uniqueString(subscription()
 param vmName string = 'vm1${disambiguationPhrase}'
 param publicIPAddressName string = 'pip-${disambiguationPhrase}${vmName}'
 param nicName string = 'nic-${disambiguationPhrase}${vmName}'
-param eAN bool = false
+param eAN bool = true
 param diskName string = 'osdisk-${disambiguationPhrase}${vmName}'
 
 //vm2
 param vmName2 string = 'vm2${disambiguationPhrase}'
 param publicIPAddressName2 string = 'pip2-${disambiguationPhrase}${vmName}'
 param nicName2 string = 'nic2-${disambiguationPhrase}${vmName}'
-param eAN2 bool = false
+param eAN2 bool = true
 param diskName2 string = 'osdisk2-${disambiguationPhrase}${vmName}'
 
 //supply during deployment
