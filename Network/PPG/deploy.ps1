@@ -1,12 +1,10 @@
 $region = 'eastus'
-$rg = 'Region' + $region
-$bicepFile = 'RegionMain.bicep'
+$rg = 'Main2' + $region
+$bicepFile = 'Main.bicep'
 
 az group create --name $rg --location $region
 
-
-az deployment group create --resource-group $rg --template-file $bicepFile --parameters myIp=[] UN=azureadmin Pass=[]
-
+#az deployment group create --resource-group $rg --template-file $bicepFile --parameters myIp=[] UN=azureadmin Pass=[]
 
 # az vm list-skus `
 #   --location westus `
