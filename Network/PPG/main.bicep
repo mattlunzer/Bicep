@@ -291,9 +291,11 @@ resource linuxVMExtensions 'Microsoft.Compute/virtualMachines/extensions@2019-07
       fileUris: [
         fileUris
       ]
+    commandToExecute: 'sh config.sh'
     }
-    protectedSettings: {
-      commandToExecute: 'sh config.sh'
-    }
+
+    // protectedSettings: {
+    //   commandToExecute: 'config.sh'
+    // }
   }
 }

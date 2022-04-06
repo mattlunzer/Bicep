@@ -1,10 +1,10 @@
-$region = 'eas'
+$region = ''
 $rg = 'zonal' + $region
 $bicepFile = 'main.bicep'
 
 az group create --name $rg --location $region
 
-
+a
 # az vm list-skus `
 #   --location westus `
 #   --all true `
