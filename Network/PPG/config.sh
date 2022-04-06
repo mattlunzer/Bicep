@@ -1,19 +1,19 @@
 #!/bin/bash
 
 #Run updates
-sudo apt update
-sudo apt upgrade -y
+sudo apt-get -y update
+sudo apt-get -y upgrade
 
 #install net-tools
-sudo apt install net-tools
+sudo apt-get install net-tools
 
 #Ubuntu - Install Git and other helpful tools
-sudo apt install build-essential -y
+sudo apt-get install build-essential -y
 #    sudo apt-get install git -y -q
-sudo apt install -y autotools-dev
-sudo apt install -y automake
-sudo apt install -y autoconf
-sudo apt install -y libtool
+sudo apt-get install -y autotools-dev
+sudo apt-get install -y automake
+sudo apt-get install -y autoconf
+sudo apt-get install -y libtool
 
 #Bash - all distros
 
@@ -28,5 +28,3 @@ make
 
 #make install is fast
 sudo make install
-
-cd sockperf/

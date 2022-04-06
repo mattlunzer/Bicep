@@ -14,7 +14,7 @@ param enableAcceleratedNetworking bool = true
 //param deployPPG bool = false
 
 /// The URI of the PowerShell Custom Script.
-param fileUris string = 'https://raw.githubusercontent.com/mattlunzer/Bicep/master/Network/PPG/config.sh'
+param fileUris string = 'https://shellscriptsrepo.blob.core.windows.net/scripts/config.sh'
 
 // disambiguate
 param disambiguationPhrase string = 'eusppg'
@@ -247,6 +247,7 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       computerName: vmName2 //strips off the 'vm-' so the vm name is short enough
       adminUsername: UN
       adminPassword: Pass
+      //customData: loadFileAsBase64('something.sh')
     }
     proximityPlacementGroup: {
       id: ppg.id
@@ -292,7 +293,7 @@ resource linuxVMExtensions 'Microsoft.Compute/virtualMachines/extensions@2019-07
       ]
     }
     protectedSettings: {
-      commandToExecute: 'chmod +x config.sh && config.sh'
+      commandToExecute: 'sh config.sh'
     }
   }
 }
