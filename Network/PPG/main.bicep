@@ -1,23 +1,25 @@
-//0.2
-//PPG deployment into AZ 1
+//deploy 2 vms for latency testing
+//04.08.22
+//  0.2
+//  use cloud-init vs cse to install sockperf
 
-//set region
+//set region based on location of resource group
 param location string = resourceGroup().location
 
-//select vm size
-param vmSize string = 'Standard_DS5_v2'
+//set vm size
+param vmSize string = 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
 
 //enable accelerated networking?
 param enableAcceleratedNetworking bool = true
 
 //deploy ppg?
-//param deployPPG bool = false
+param deployPPG bool = false
 
-/// The URI of the PowerShell Custom Script.
-param fileUris string = 'https://shellscriptsrepo.blob.core.windows.net/scripts/config.sh'
+/// The URI of the Custom Script.
+param fileUris string = 'https://raw.githubusercontent.com/mattlunzer/Bicep/master/Network/PPG/config.sh'
 
 // disambiguate
-param disambiguationPhrase string = 'eusppg'
+param disambiguationPhrase string = 'ppg'
 
 //network
 param vnetName string = 'vnet-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
@@ -43,6 +45,11 @@ param diskName2 string = 'osdisk2-${disambiguationPhrase}${vmName}'
 param myIp string
 param UN string
 param Pass string
+
+//new
+var deployPPG = {
+  id: ppg.id
+}
 
 //nsg
 resource nsg 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
@@ -98,7 +105,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
 }
 
 //ppg
-resource ppg 'Microsoft.Compute/proximityPlacementGroups@2020-06-01' = {
+resource ppg 'Microsoft.Compute/proximityPlacementGroups@2020-06-01' = if (deployPPG) {
   name: ppgName
   location: location
   properties: {
@@ -155,12 +162,13 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: vmSize //for complete list --> az vm list-sizes --location "eastus" -o table
+      vmSize: vmSize 
     }
     osProfile: {
-      computerName: vmName //strips off the 'vm-' so the vm name is short enough
+      computerName: vmName
       adminUsername: UN
       adminPassword: Pass
+      customData: loadFileAsBase64('config.sh')
     }
     proximityPlacementGroup: {
       id: ppg.id
@@ -190,7 +198,6 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
     '1'
   ]
 }
-
 
 //vm2
 
@@ -247,7 +254,7 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       computerName: vmName2 //strips off the 'vm-' so the vm name is short enough
       adminUsername: UN
       adminPassword: Pass
-      //customData: loadFileAsBase64('something.sh')
+      customData: loadFileAsBase64('config.sh')
     }
     proximityPlacementGroup: {
       id: ppg.id
@@ -276,26 +283,4 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   zones: [
     '1'
   ]
-}
-
-resource linuxVMExtensions 'Microsoft.Compute/virtualMachines/extensions@2019-07-01' = {
-  parent: ubuntuVM2
-  name: vmName2
-  location: location
-  properties: {
-    publisher: 'Microsoft.Azure.Extensions'
-    type: 'CustomScript'
-    typeHandlerVersion: '2.1'
-    autoUpgradeMinorVersion: true
-    settings: {
-      fileUris: [
-        fileUris
-      ]
-    commandToExecute: 'sh config.sh'
-    }
-
-    // protectedSettings: {
-    //   commandToExecute: 'config.sh'
-    // }
-  }
 }
