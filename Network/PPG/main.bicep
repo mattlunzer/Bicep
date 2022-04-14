@@ -1,7 +1,7 @@
 //deploy 2 vms for latency testing
-//04.08.22
-//  0.2
-//  use cloud-init vs cse to install sockperf
+//04.13.22
+//  0.3
+//  conditional deployment for PPG
 
 //set region based on location of resource group
 param location string = resourceGroup().location
@@ -15,11 +15,8 @@ param enableAcceleratedNetworking bool = true
 //deploy ppg?
 param deployPPG bool = false
 
-/// The URI of the Custom Script.
-param fileUris string = 'https://raw.githubusercontent.com/mattlunzer/Bicep/master/Network/PPG/config.sh'
-
 // disambiguate
-param disambiguationPhrase string = 'ppg'
+param disambiguationPhrase string = 'mjl'
 
 //network
 param vnetName string = 'vnet-${disambiguationPhrase}${uniqueString(subscription().id, resourceGroup().id)}'
@@ -47,7 +44,7 @@ param UN string
 param Pass string
 
 //new
-var deployPPG = {
+var ppgid = {
   id: ppg.id
 }
 
@@ -170,9 +167,7 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       adminPassword: Pass
       customData: loadFileAsBase64('config.sh')
     }
-    proximityPlacementGroup: {
-      id: ppg.id
-    }
+    proximityPlacementGroup: deployPPG ? ppgid : null
     storageProfile: {
       imageReference: {
         publisher: 'Canonical'
@@ -242,7 +237,7 @@ resource networkInterface2 'Microsoft.Network/networkInterfaces@2020-11-01' = {
   }
 }
 
-//deploy vm
+//deploy vm2
 resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   name: vmName2
   location: location
@@ -256,9 +251,7 @@ resource ubuntuVM2 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       adminPassword: Pass
       customData: loadFileAsBase64('config.sh')
     }
-    proximityPlacementGroup: {
-      id: ppg.id
-    }
+    proximityPlacementGroup: deployPPG ? ppgid : null
     storageProfile: {
       imageReference: {
         publisher: 'Canonical'
