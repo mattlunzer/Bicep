@@ -23,7 +23,7 @@ az keyvault set-policy `
     --key-permissions all
 
 #1 create key
-az keyvault key create --name $keyName --vault-name $vault
+#az keyvault key create --name $keyName --vault-name $vault
 
 #2 grab vars
 $userIdentityId=(az identity show --name $managedIdentity --resource-group $rg --query id)
