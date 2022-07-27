@@ -1,8 +1,8 @@
 
 $rg='cmk'
 
-#$vault='stg-4-cmkvault'
-$vault=(az keyvault list --resource-group $rg  --query "[*].name | [0]")
+$vault='stg-8-cmkvault'
+#$vault=(az keyvault list --resource-group $rg --query "[*].name | [0]")
 
 #$managedIdentity='stgcmkMI'
 $managedIdentity=(az identity list --resource-group $rg --query "[*].name | [0]")
