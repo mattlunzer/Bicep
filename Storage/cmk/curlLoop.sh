@@ -1,5 +1,9 @@
+!/bin/bash
 
-#!/bin/bash
+# timestamp() {
+#   "%T" # current time
+# }
+
 
 url='https://stg7erkpmbkeda2i.blob.core.windows.net/test/sample3.txt'
 
