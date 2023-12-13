@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param vmName string = 'myVM3'
+param vmName string = 'myVM5'
 
 //set vm size
 param vmSize string = 'Standard_DS5_v2' //for complete list --> az vm list-sizes --location "eastus" -o table
@@ -77,6 +77,9 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2020-12-01' = {
       ]
     }
   }
+  zones: [
+    '1'
+  ]
 }
 
 
